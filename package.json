@@ -1,0 +1,27 @@
+{
+  "name": "broodwar-replays-backend",
+  "version": "0.0.0",
+  "scripts": {
+    "res:build": "rescript",
+    "res:clean": "rescript clean",
+    "res:dev": "rescript -w"
+  },
+  "keywords": [
+    "rescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@rescript/core": "1.5.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "multiparty": "^4.2.3",
+    "pg": "^8.13.0",
+    "rescript": "11.1.3",
+    "rescript-schema": "^8.4.0"
+  },
+  "devDependencies": {
+    "rescript-nodejs": "^16.1.0"
+  }
+}
