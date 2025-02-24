@@ -1,11 +1,17 @@
 open Express
 
-let router = RoleRouter.make(User.Root)
+let router = Express.Router.make()
+
+AuthMiddleware.make(User.Root)
+  -> Router.use(router, _)
 
 router -> Router.postAsync("/admin", async (req, res) => {
-  switch req -> body -> S.parseWith(UserSchema.schema) {
-    | Ok(body) => (await UserRepository.createAdmin(body.login, body.nickname, body.password)) -> Express.dataOrErr(res, _)
-    | Error(e) => res -> jsonError(e -> S.Error.message)
+  try {
+    let payload = req -> body -> S.parseOrThrow(UserSchema.schema)
+    let result = await UserRepository.createAdmin(payload.login, payload.nickname, payload.password)
+    res -> Express.dataOrErr(result)
+  } catch {
+    | S.Raised(e) => res -> jsonError(e -> S.Error.message)
   }
 })
   

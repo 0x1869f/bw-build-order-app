@@ -14,9 +14,7 @@ let extractJWTandVerify = (header: string) => {
 }
 
 let make = (role: User.role) => {
-  let router = Express.Router.make()
-
-  router -> Express.Router.use((req, res, next) => {
+  (req, res, next) => {
     switch req -> Express.getRequestHeader("Authorization") {
       | Some(value) => {
         switch value -> extractJWTandVerify {
@@ -42,7 +40,5 @@ let make = (role: User.role) => {
         res -> Express.sendStatus(403) -> ignore
       }
     }
-  })
-
-  router
+  }
 }

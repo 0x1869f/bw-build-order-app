@@ -11,10 +11,10 @@ let schema = S.object(s => {
   password: s.field("password", S.string),
   role: s.field(
     "role",
-    S.union([
-      S.literal(User.Root),
-      S.literal(User.Admin),
-      S.literal(User.User),
+    S.enum([
+      User.Root,
+      User.Admin,
+      User.User,
     ])
   ),
 

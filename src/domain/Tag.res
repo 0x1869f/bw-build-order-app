@@ -1,5 +1,12 @@
+module New = {
+  type t = {
+    race: Race.t,
+    name: string,
+  }
+}
+
 type t = {
+  ...New.t,
   id: Id.t,
-  name: string,
   creator: Id.t,
 }

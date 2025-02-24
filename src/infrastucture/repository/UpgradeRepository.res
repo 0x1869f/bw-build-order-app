@@ -1,10 +1,10 @@
 let get = async () => {
   try {
-    let result: Pg.Result.t<Upgrade.t> = await Db.client -> Pg.Client.query("SELECT * from building")
+    let result: Pg.Result.t<Upgrade.t> = await Db.client -> Pg.Client.query("SELECT * from upgrade")
     result
       -> Pg.Result.rows
-      -> Ok
+      -> State.Exists
   } catch {
-    | _ => Error(AppError.OperationHasFailed)
+    | _ => State.Error(State.OperationHasFailed)
   }
 }

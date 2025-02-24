@@ -13,7 +13,7 @@ module StoredReplay = {
   type t = {
     id: Id.t,
     creator: Id.t,
-    file: string,
+    file: Nullable.t<string>,
     ...new,
   }
 
@@ -29,17 +29,17 @@ module StoredReplay = {
       secondRace: r.second_race,
       secondBuildOrder: r.second_build_order -> Nullable.toOption,
       creator: r.creator,
-      file: r.file,
+      file: r.file -> Nullable.toOption,
     }
   } 
 }
 
-let create = async (replay: ReplaySchema.payload, creator: Id.t) => {
+let create = async (replay: Replay.New.t, creator: Id.t) => {
   try {
     let result: Pg.Result.t<StoredReplay.t> = await Db.client -> Pg.Client.queryWithParam9(
-      "INSERT INTO replay (description, map, player, race, build_order, second_player, second_race, second_build_order, creator) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+      "INSERT INTO replay (description, map, player, race, build_order, second_player, second_race, second_build_order, creator) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, description, map, player, race, build_order, second_player, second_race, second_build_order, creator",
       (
-        replay.description,
+        replay.description -> Nullable.fromOption,
         replay.map,
         replay.player,
         replay.race,
@@ -54,22 +54,30 @@ let create = async (replay: ReplaySchema.payload, creator: Id.t) => {
     result
       -> Pg.Result.rows
       -> Array.get(0)
-      -> Ok
+      -> State.Created
   } catch {
-    | _ => Error(AppError.OperationHasFailed)
+    | Exn.Error(obj) => {
+      obj -> PgError.toAppState
+    }
   }
 }
 
 let addFile = async (path: string, id: Id.t) => {
   try {
-    let result: Pg.Result.t<StoredReplay.t> = await Db.client -> Pg.Client.queryWithParam2("UPDATE replay SET file = $1 WHERE id = $2", (path, id))
+    let replay: Pg.Result.t<Replay.t> = await Db.client -> Pg.Client.queryWithParam("SELECT * from replay WHERE id = $1;", [id])
 
-    result
-      -> Pg.Result.rows
-      -> Array.map((r) => StoredReplay.mapToReplay(r))
-      -> Ok
+    if replay -> Pg.Result.rowCount -> Nullable.getOr(0) > 0 {
+      let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE replay SET file = $1 WHERE id = $2;", (path, id))
+
+      State.Updated(path)
+    } else {
+      State.EntityDoesNotExist -> Error
+    }
   } catch {
-    | _ => Error(AppError.OperationHasFailed)
+    | Exn.Error(obj) => {
+      Console.log2("base err: ", obj)
+      obj -> PgError.toAppState
+    }
   }
 }
 
@@ -80,8 +88,10 @@ let getAll = async () => {
     result
       -> Pg.Result.rows
       -> Array.map((r) => StoredReplay.mapToReplay(r))
-      -> Ok
+      -> State.Exists
   } catch {
-    | _ => Error(AppError.OperationHasFailed)
+    | Exn.Error(obj) => {
+      obj -> PgError.toAppState
+    }
   }
 }

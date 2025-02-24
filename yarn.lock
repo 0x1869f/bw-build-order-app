@@ -20,7 +20,7 @@ array-flatten@1.1.1:
   resolved "https://registry.yarnpkg.com/array-flatten/-/array-flatten-1.1.1.tgz#9a5f699051b1e7073328f2a008968b64ea2955d2"
   integrity sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==
 
-body-parser@1.20.3:
+body-parser@1.20.3, body-parser@^1.20.3:
   version "1.20.3"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.20.3.tgz#1953431221c6fb5cd63c4b36d53fab0928e548c6"
   integrity sha512-7rAxByjUMqQ3/bHJy7D6OGXvx/MMc4IqBn/X0fcM1QUcAItpZrBEYhWGem+tzXH90c+G01ypMcYJBO9Y30203g==
@@ -579,10 +579,10 @@ rescript-nodejs@^16.1.0:
   resolved "https://registry.yarnpkg.com/rescript-nodejs/-/rescript-nodejs-16.1.0.tgz#2278d8880d9e4a5c46cd845d5ac4ee2bd69277ee"
   integrity sha512-RyXGIEsb8UhuShf5PwKcTkYNPz+cPQ0CZq74lbYCbCa5YFidbmiIWpQhCMtpsgP1PkLClhKGDkfZfmwwNOil4Q==
 
-rescript-schema@^8.4.0:
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/rescript-schema/-/rescript-schema-8.4.0.tgz#49e04715fdf7f654129e7220c8f0ddef6acf23b3"
-  integrity sha512-X39lDpAXv0T5Jeux9GU6VCs6lpjVMn6kNKrm1lXqE4d1fmfhq+YYbf4emkIZSZxcEZOBFgNBdsFg14UuW1n4CA==
+rescript-schema@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/rescript-schema/-/rescript-schema-9.0.1.tgz#fcf0b73e5a90415d3a50663c06564f2e241f32ba"
+  integrity sha512-Tv1r+I+A4JfaFRshznG9Kxd/7E2Wvvp+TBTS3ANLcsI2XJe2vRMltFiSp9Z3u3XdBZwGV5veYsDzQnATWwW4Jg==
 
 rescript@11.1.3:
   version "11.1.3"

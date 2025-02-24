@@ -1,0 +1,36 @@
+services:
+  broodwar-replays-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8888
+    volumes:
+      - broodwar-replays-static:/usr/share/nginx/html/static/
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=db
+      - SALT=${SALT}
+      - JWT_KEY=${JWT_KEY}
+      - STATIC_DIR=${STATIC_DIR}
+  db:
+    image: postgres:17.4-alpine3.21
+    volumes:
+      - broodwar-replays-database:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/data.sql
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+
+volumes:
+  broodwar-replays-static:
+    external: true
+    name: broodwar-replays-static
+  broodwar-replays-database:
+    external: true
+    name: broodwar-replays-database
+

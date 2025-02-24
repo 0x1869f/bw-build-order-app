@@ -19,36 +19,43 @@ let getMaps = async () => {
     result 
       -> Pg.Result.rows
       -> Array.map(StoredMap.toGameMap)
-      -> Ok
+      -> State.Exists
   } catch {
-    | _ => Error(AppError.OperationHasFailed)
+    | Exn.Error(obj) => {
+      obj -> PgError.toAppState
+    }
   }
 }
 
 let create = async (name) => {
   try {
-    let result: Pg.Result.t<StoredMap.t> = await Db.client -> Pg.Client.queryWithParam("INSERT INTO map (name) VALUES ($1)", [name])
-
+    let result: Pg.Result.t<StoredMap.t> = await Db.client -> Pg.Client.queryWithParam("INSERT INTO map (name) VALUES ($1) RETURNING id, name, image", [name])
     result
       -> Pg.Result.rows
       -> Array.getUnsafe(0)
       -> StoredMap.toGameMap
-      -> Ok
+      -> State.Created
   } catch {
-    | _ => Error(AppError.OperationHasFailed)
+    | Exn.Error(obj) => {
+      obj -> PgError.toAppState
+    }
   }
 }
 
-let addImage = async (id: Id.t, image: string) => {
+let addImage = async (path: string, id: Id.t) => {
   try {
-    let result: Pg.Result.t<StoredMap.t> = await Db.client -> Pg.Client.queryWithParam2("UPDATE map SET image = $2 WHERE id = $1", (id, image))
+    let replay: Pg.Result.t<Replay.t> = await Db.client -> Pg.Client.queryWithParam("SELECT * from map WHERE id = $1;", [id])
 
-    result
-      -> Pg.Result.rows
-      -> Array.getUnsafe(0)
-      -> StoredMap.toGameMap
-      -> Ok
+    if replay -> Pg.Result.rowCount -> Nullable.getOr(0) > 0 {
+      let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE map SET image = $1 WHERE id = $2;", (path, id))
+
+      State.Updated(path)
+    } else {
+      State.EntityDoesNotExist -> Error
+    }
   } catch {
-    | _ => Error(AppError.OperationHasFailed)
+    | Exn.Error(obj) => {
+      obj -> PgError.toAppState
+    }
   }
 }

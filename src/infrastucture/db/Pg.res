@@ -60,6 +60,334 @@ type pgTypes =
 | @as(4089) REGNAMESPACE
 | @as(4096) REGROLE
 
+module Error = {
+  type sererity = | @as("Error") Error
+  type errorCode =
+  //Class 00 — Successful Completion
+  | @as("00000") SuccessFullCompletion
+  //Class 01 — Warning
+  | @as("01000") Warning
+  | @as("0100C") DynamicResultSetsReturned
+  | @as("01008") ImplicitZeroBitPadding
+  | @as("01003") NullValueEliminatedInSetFunction
+  | @as("01007") PrivilegeNotGranted
+  | @as("01006") PrivilegeNotRevoked
+  | @as("01004") StringDataRightTruncation
+  | @as("01P01") DeprecatedFeature
+  //Class 02 — No Data (this is also a warning class per the SQL standard)
+  | @as("02000") NoData
+  | @as("02001") NoAdditionalDynamicResultSetsReturned
+  //Class 03 — SQL Statement Not Yet Complete
+  | @as("03000") SqlStatementNotYetComplete
+  //Class 08 — Connection Exception
+  | @as("08000") ConnectionException
+  | @as("08003") ConnectionDoesNotExist
+  | @as("08006") ConnectionFailure
+  | @as("08001") SqlClientUnableToEstablishSqlConnection
+  | @as("08004") SqlServerRejectedEstablishmentOfSqlConnection
+  | @as("08007") TransactionResolutionUnknown
+  | @as("08P01") ProtocolViolation
+  //Class 09 — Triggered Action Exception
+  | @as("09000") TriggeredActionException
+  //Class 0A — Feature Not Supported
+  | @as("0A000") FeatureNotSupported
+  //Class 0B — Invalid Transaction Initiation
+  | @as("0B000") InvalidTransactionInitiation
+  //Class 0F — Locator Exception
+  | @as("0F000") LocatorException
+  | @as("0F001") InvalidLocatorSpecification
+  //Class 0L — Invalid Grantor
+  | @as("0L000") InvalidGrantor
+  | @as("0LP01") InvalidGrantOperation
+  //Class 0P — Invalid Role Specification
+  | @as("0P000") InvalidRoleSpecification
+  //Class 0Z — Diagnostics Exception
+  | @as("0Z000") DiagnosticsException
+  | @as("0Z002") StackedDiagnosticsAccessedWithoutActiveHandler
+  //Class 20 — Case Not Found
+  | @as("20000") CaseNotFound
+  //Class 21 — Cardinality Violation
+  | @as("21000") CardinalityViolation
+  //Class 22 — Data Exception
+  | @as("22000") DataContextion
+  | @as("2202E") ArraySubscriptError
+  | @as("22021") CharacterNotInRepertoire
+  | @as("22008") DatetimeFieldOverflow
+  | @as("22012") DivisionByZero
+  | @as("22005") ErrorInAssignment
+  | @as("2200B") EscapeCharacterConflict
+  | @as("22022") IndicatorOverflow
+  | @as("22015") IntervalFieldOverflow
+  | @as("2201E") InvalidArgumentForLogarithm
+  | @as("22014") InvalidArgumentForNtileFunction
+  | @as("22016") InvalidArgumentForNthValueFunction
+  | @as("2201F") InvalidArgumentForPowerFunction
+  | @as("2201G") InvalidArgumentForWidthBucketFunction
+  | @as("22018") InvalidCharacterValueForCast
+  | @as("22007") InvalidDatetimeFormat
+  | @as("22019") InvalidEscapeCharacter
+  | @as("2200D") InvalidEscapeOctet
+  | @as("22025") InvalidEscapeSequence
+  | @as("22P06") NonstandardUseOfEscapeCharacter
+  | @as("22010") InvalidIndicatorParameterValue
+  | @as("22023") InvalidParameterValue
+  | @as("22013") InvalidPrecedingOrFollowingSize
+  | @as("2201B") InvalidRegularExpression
+  | @as("2201W") InvalidRowCountInLimitClause
+  | @as("2201X") InvalidRowCountInResultOffsetClause
+  | @as("2202H") InvalidTablesampleArgument
+  | @as("2202G") InvalidTablesampleRepeat
+  | @as("22009") InvalidTimeZoneDisplacementValue
+  | @as("2200C") InvalidUseOfEscapeCharacter
+  | @as("2200G") MostSpecificTypeMismatch
+  | @as("22004") NullValueNotAllowed
+  | @as("22002") NullValueNoIndicatorParameter
+  | @as("22003") NumericValueOutOfRange
+  | @as("2200H") SequenceGeneratorLimitExceeded
+  | @as("22026") StringDataLengthMismatch
+  | @as("22001") StringDataRightTruncation2
+  | @as("22011") SubstringError
+  | @as("22027") TrimError
+  | @as("22024") UnterminatedCString
+  | @as("2200F") ZeroLengthCharacterString
+  | @as("22P01") FloatingPointException
+  | @as("22P02") InvalidTextRepresentation
+  | @as("22P03") InvalidBinaryRepresentation
+  | @as("22P04") BadCopyFileFormat
+  | @as("22P05") UntranslatableCharacter
+  | @as("2200L") NotAnXmlDocument
+  | @as("2200M") InvalidXmlDocument
+  | @as("2200N") InvalidXmlContent
+  | @as("2200S") InvalidXmlComment
+  | @as("2200T") InvalidXmlProcessingInstruction
+  | @as("22030") DuplicateJsonValue
+  | @as("22031") InvalidArgumentForSqlJsonDatetimeFunction
+  | @as("22032") InvalidJsonText
+  | @as("22033") InvalidSqlJsonSubscript
+  | @as("22034") MoreThanOneSqlJsonItem
+  | @as("22035") NoSqlJsonItem
+  | @as("22036") NonNumericSqlJsonItem
+  | @as("22037") NonUniqueKeysInAJsonObject
+  | @as("22038") SingletonSqlJsonItemRequired
+  | @as("22039") SqlJsonArrayNotFound
+  | @as("2203A") SqlJsonMemberNotFound
+  | @as("2203B") SqlJsonNumberNotFound
+  | @as("2203C") SqlJsonObjectNotFound
+  | @as("2203D") TooManyJsonArrayElements
+  | @as("2203E") TooManyJsonObjectMembers
+  | @as("2203F") SqlJsonScalarRequired
+  | @as("2203G") SqlJsonItemCannotBeCastToTargetType
+    //Class 23 — Integrity Constraint Violation
+  | @as("23000") IntegrityConstraintViolation
+  | @as("23001") RestrictViolation
+  | @as("23502") NotNullViolation
+  | @as("23503") ForeignKeyViolation
+  | @as("23505") UniqueViolation
+  | @as("23514") CheckViolation
+  | @as("23P01") ExclusionViolation
+  //Class 24 — Invalid Cursor State
+  | @as("24000") InvalidCursorState
+  //Class 25 — Invalid Transaction State
+  | @as("25000") InvalidTransactionState
+  | @as("25001") ActiveSQLTransaction
+  | @as("25002") BranchTransactionAlreadyActive
+  | @as("25008") HeldCursorRequiresSameIsolationLevel
+  | @as("25003") InappropriateAccessModeForBranchTransaction
+  | @as("25004") InappropriateIsolationLevelForBranchTransaction
+  | @as("25005") NoActiveSQLTransactionForBranchTransaction
+  | @as("25006") ReadOnlySQLTransaction
+  | @as("25007") SchemaAndDataStatementMixingNotSupported
+  | @as("25P01") NoActiveSQLTransaction
+  | @as("25P02") InFailedSQLTransaction
+  | @as("25P03") IdleInTransactionSessionTimeout
+  | @as("25P04") TransactionTimeout
+  //Class 26 — Invalid SQL Statement Name
+  | @as("26000") InvalidSQLStatementName
+  //Class 27 — Triggered Data Change Violation
+  | @as("27000") TriggeredDataChangeViolation
+  //Class 28 — Invalid Authorization Specification
+  | @as("28000") InvalidAuthorizationSpecification
+  | @as("28P01") InvalidPassword
+  //Class 2B — Dependent Privilege Descriptors Still Exist
+  | @as("2B000") DependentPrivilegeDescriptorsStillExist
+  | @as("2BP01") DependentObjectsStillExist
+  //Class 2D — Invalid Transaction Termination
+  | @as("2D000") InvalidTransactionTermination
+  //Class 2F — SQL Routine Exception
+  | @as("2F000") SqlRoutineException
+  | @as("2F005") FunctionExecutedNoReturnStatement
+  | @as("2F002") ModifyingSqlDataNotPermitted
+  | @as("2F003") ProhibitedSqlStatementAttempted
+  | @as("2F004") ReadingSqlDataNotPermitted
+  //Class 34 — Invalid Cursor Name
+  | @as("34000") InvalidCursorName
+  //Class 38 — External Routine Exception
+  | @as("38000") ExternalRoutineException
+  | @as("38001") ContainingSqlNotPermitted
+  | @as("38002") ModifyingSqlDataNotPermitted2
+  | @as("38003") ProhibitedSqlStatementAttempted2
+  | @as("38004") ReadingSqlDataNotPermitted2
+  //Class 39 — External Routine Invocation Exception
+  | @as("39000") ExternalRoutineInvocationException
+  | @as("39001") InvalidSqlstateReturned
+  | @as("39004") NullValueNotAllowed2
+  | @as("39P01") TriggerProtocolViolated
+  | @as("39P02") SrfProtocolViolated
+  | @as("39P03") EventTriggerProtocolViolated
+  //Class 3B — Savepoint Exception
+  | @as("3B000") SavepointException
+  | @as("3B001") InvalidSavepointSpecification
+  //Class 3D — Invalid Catalog Name
+  | @as("3D000") InvalidCatalogName
+  //Class 3F — Invalid Schema Name
+  | @as("3F000") InvalidSchemaName
+  //Class 40 — Transaction Rollback
+  | @as("40000") TransactionRollback
+  | @as("40002") TransactionIntegrityConstraintViolation
+  | @as("40001") SerializationFailure
+  | @as("40003") StatementCompletionUnknown
+  | @as("40P01") DeadlockDetected
+  //Class 42 — Syntax Error or Access Rule Violation
+  | @as("42000") SyntaxErrorOrAccessRuleViolation
+  | @as("42601") SyntaxError
+  | @as("42501") InsufficientPrivilege
+  | @as("42846") CannotCoerce
+  | @as("42803") GroupingError
+  | @as("42P20") WindowingError
+  | @as("42P19") InvalidRecursion
+  | @as("42830") InvalidForeignKey
+  | @as("42602") InvalidName
+  | @as("42622") NameTooLong
+  | @as("42939") ReservedName
+  | @as("42804") DatatypeMismatch
+  | @as("42P18") IndeterminateDatatype
+  | @as("42P21") CollationMismatch
+  | @as("42P22") IndeterminateCollation
+  | @as("42809") WrongObjectType
+  | @as("428C9") GeneratedAlways
+  | @as("42703") UndefinedColumn
+  | @as("42883") UndefinedFunction
+  | @as("42P01") UndefinedTable
+  | @as("42P02") UndefinedParameter
+  | @as("42704") UndefinedObject
+  | @as("42701") DuplicateColumn
+  | @as("42P03") DuplicateCursor
+  | @as("42P04") DuplicateDatabase
+  | @as("42723") DuplicateFunction
+  | @as("42P05") DuplicatePreparedStatement
+  | @as("42P06") DuplicateSchema
+  | @as("42P07") DuplicateTable
+  | @as("42712") DuplicateAlias
+  | @as("42710") DuplicateObject
+  | @as("42702") AmbiguousColumn
+  | @as("42725") AmbiguousFunction
+  | @as("42P08") AmbiguousParameter
+  | @as("42P09") AmbiguousAlias
+  | @as("42P10") InvalidColumnReference
+  | @as("42611") InvalidColumnDefinition
+  | @as("42P11") InvalidCursorDefinition
+  | @as("42P12") InvalidDatabaseDefinition
+  | @as("42P13") InvalidFunctionDefinition
+  | @as("42P14") InvalidPreparedStatementDefinition
+  | @as("42P15") InvalidSchemaDefinition
+  | @as("42P16") InvalidTableDefinition
+  | @as("42P17") InvalidObjectDefinition
+  //Class 44 — WITH CHECK OPTION Violation
+  | @as("44000") WithCheckOptionViolation
+  //Class 53 — Insufficient Resources
+  | @as("53000") InsufficientResources
+  | @as("53100") DiskFull
+  | @as("53200") OutOfMemory
+  | @as("53300") TooManyConnections
+  | @as("53400") ConfigurationLimitExceeded
+  //Class 54 — Program Limit Exceeded
+  | @as("54000") ProgramLimitExceeded
+  | @as("54001") StatementTooComplex
+  | @as("54011") TooManyColumns
+  | @as("54023") TooManyArguments
+  //Class 55 — Object Not In Prerequisite State
+  | @as("55000") ObjectNotInPrerequisiteState
+  | @as("55006") ObjectInUse
+  | @as("55P02") CantChangeRuntimeParam
+  | @as("55P03") LockNotAvailable
+  | @as("55P04") UnsafeNewEnumValueUsage
+  //Class 57 — Operator Intervention
+  | @as("57000") OperatorIntervention
+  | @as("57014") QueryCanceled
+  | @as("57P01") AdminShutdown
+  | @as("57P02") CrashShutdown
+  | @as("57P03") CannotConnectNow
+  | @as("57P04") DatabaseDropped
+  | @as("57P05") IdleSessionTimeout
+  //Class 58 — System Error (errors external to PostgreSQL itself)
+  | @as("58000") SystemError
+  | @as("58030") IoError
+  | @as("58P01") UndefinedFile
+  | @as("58P02") DuplicateFile
+  //Class F0 — Configuration File Error
+  | @as("F0000") ConfigFileError
+  | @as("F0001") LockFileExists
+  //Class HV — Foreign Data Wrapper Error (SQL/MED)
+  | @as("HV000") FdwError
+  | @as("HV005") FdwColumnNameNotFound
+  | @as("HV002") FdwDynamicParameterValueNeeded
+  | @as("HV010") FdwFunctionSequenceError
+  | @as("HV021") FdwInconsistentDescriptorInformation
+  | @as("HV024") FdwInvalidAttributeValue
+  | @as("HV007") FdwInvalidColumnName
+  | @as("HV008") FdwInvalidColumnNumber
+  | @as("HV004") FdwInvalidDataType
+  | @as("HV006") FdwInvalidDataTypeDescriptors
+  | @as("HV091") FdwInvalidDescriptorFieldIdentifier
+  | @as("HV00B") FdwInvalidHandle
+  | @as("HV00C") FdwInvalidOptionIndex
+  | @as("HV00D") FdwInvalidOptionName
+  | @as("HV090") FdwInvalidStringLengthOrBufferLength
+  | @as("HV00A") FdwInvalidStringFormat
+  | @as("HV009") FdwInvalidUseOfNullPointer
+  | @as("HV014") FdwTooManyHandles
+  | @as("HV001") FdwOutOfMemory
+  | @as("HV00P") FdwNoSchemas
+  | @as("HV00J") FdwOptionNameNotFound
+  | @as("HV00K") FdwReplyHandle
+  | @as("HV00Q") FdwSchemaNotFound
+  | @as("HV00R") FdwTableNotFound
+  | @as("HV00L") FdwUnableToCreateExecution
+  | @as("HV00M") FdwUnableToCreateReply
+  | @as("HV00N") FdwUnableToEstablishConnection
+  //Class P0 — PL/pgSQL Error
+  | @as("P0000") PlpgsqlError
+  | @as("P0001") RaiseException
+  | @as("P0002") NoDataFound
+  | @as("P0003") TooManyRows
+  | @as("P0004") AssertFailure
+  //Class XX — Internal Error
+  | @as("XX000") InternalError
+  | @as("XX001") DataCorrupted
+  | @as("XX002") IndexCorrupted
+
+  type t = {
+    severity: sererity,
+    code: errorCode,
+    detail: string,
+    hint: option<string>,
+    position: option<string>,
+    // internalPosition: undefined,
+    // internalQuery: undefined,
+    // where: undefined,
+    schema: string,
+    table: string,
+    column: option<string>,
+    // dataType,
+    constraint_: option<string>,
+    // file: '',
+    // line: '',
+    // routine: ''
+  }
+
+  external fromExn: Exn.t => t = "%identity"
+}
+
 @unboxed type parserValue = String(string) | Buffer(NodeJs.Buffer.t)
 
 type getTypeParser<'a> = (pgTypes) => (parserValue) => 'a
@@ -117,7 +445,7 @@ module Client = {
   external make: config => t = "Client"
 
   @send external query: (t, string) => promise<Result.t<'b>> = "query" 
-  @send external queryWithParam: (t, string, ('a)) => promise<Result.t<'x>> = "query" 
+  @send external queryWithParam: (t, string, (array<'a>)) => promise<Result.t<'x>> = "query" 
   @send external queryWithParam2: (t, string, ('a, 'b)) => promise<Result.t<'x>> = "query" 
   @send external queryWithParam3: (t, string, ('a, 'b, 'c)) => promise<Result.t<'x>> = "query" 
   @send external queryWithParam4: (t, string, ('a, 'b, 'c, 'd)) => promise<Result.t<'x>> = "query" 

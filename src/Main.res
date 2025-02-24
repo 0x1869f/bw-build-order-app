@@ -4,10 +4,10 @@ let host = "localhost"
 let port = 8888
 
 let app = express()
+
 app -> use(urlencodedMiddlewareWithOptions({
   "extended": true
 }))
-
 app -> use(Express.cors("*"))
 
 app -> Express.useRouterWithPath("/root", RootRouter.router)

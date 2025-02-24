@@ -1,5 +1,11 @@
+module New = {
+  type t = {
+    name: string,
+  }
+}
+
 type t = {
-  id: Id.t,
-  name: string,
+  ...New.t,
   image: option<string>,
+  id: Id.t,
 }

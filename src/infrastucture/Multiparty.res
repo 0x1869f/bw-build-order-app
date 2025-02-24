@@ -7,7 +7,7 @@ type config = {
   maxFilesSize?: string, // Only relevant when autoFiles is true. Limits the total bytes accepted for all files combined. If this value is exceeded, an error event is emitted. The default is Infinity.
   autoFields?: bool, // Enables field events and disables part events for fields. This is automatically set to true if you add a field listener.
   autoFiles?: bool, // Enables file events and disables part events for files. This is automatically set to true if you add a file listener.
-  uploadDir?: bool, // Only relevant when autoFiles is true. The directory for placing file uploads in. You can move them later using fs.rename(). Defaults to os.tmpdir().
+  uploadDir?: string, // Only relevant when autoFiles is true. The directory for placing file uploads in. You can move them later using fs.rename(). Defaults to os.tmpdir().
 }
 
 @module("multiparty")
@@ -24,7 +24,7 @@ type err = {
   statusCode: int,
 }
 
-type fileContent = {
+type file = {
   fieldName: string, // same as name - the field name for this file
   originalFilename: string, // - the filename that the user reports for the file
   path: string, // - the absolute path of the uploaded file on disk
@@ -32,25 +32,20 @@ type fileContent = {
   size: string, // - size of the file in bytes
 }
 
-type file = {
-  name: string,
-  file: fileContent
-}
-
-type callback = (~err: option<err>, ~fields: dict<array<string>>, ~files: dict<file>) => unit
+type callback = (~err: Nullable.t<err>, ~fields: dict<array<string>>, ~files: dict<array<file>>) => unit
 
 @send
 external parse: (t, Express.req, callback) => unit = "parse"
 
 type asyncResult = {
   fields: dict<array<string>>,
-  files: dict<file>,
+  files: dict<array<file>>,
 }
 
 let parseAsync = (instance: t, req: Express.req) => {
   Promise.make((resolve, reject) => {
     instance -> parse(req, (~err, ~fields, ~files) => {
-      switch err {
+      switch err -> Nullable.toOption {
         | Some(value) => reject(value)
         | None => resolve({
           fields: fields,

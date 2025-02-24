@@ -202,12 +202,32 @@ external cors: string => middleware = "default"
 
 let jsonError = (res: res, text: string) => res -> status(400) -> json({"reason": text}) -> ignore
 
-let dataOrErr = (res: res, value: result<'a, AppError.t>) => {
+let dataOrErr = (res: res, value: State.t<'a>) => {
   switch value {
-    | Ok(r) => res -> status(200) -> json(r) -> ignore 
-    | Error(AppError.IncorrectData) => res -> sendStatus(400) -> ignore
-    | Error(AppError.EntityDoesNotExist) => res -> sendStatus(404) -> ignore 
-    | Error(AppError.Forbidden) => res -> sendStatus(403) -> ignore 
-    | Error(AppError.OperationHasFailed) => res -> sendStatus(500) -> ignore
-  }
+    | Error(e)   => switch e {
+      | State.IncorrectData => 400
+      | State.EntityDoesNotExist => 404
+      | State.Forbidden => 403
+      | State.Conflict => 409
+      | OperationHasFailed => 500
+    } -> sendStatus(res, _)
+    | State.Exists(r) => res
+      -> status(200)
+      -> json(r)
+    | State.Created(r) => res
+      -> status(201)
+      -> json(r)
+    | State.Updated(r) => res
+      -> status(200)
+      -> json(r)
+    | State.ExistsEmpty => res
+      -> status(200)
+      -> json(Dict.make()) 
+    | State.CreatedEmpty => res
+      -> status(201)
+      -> json(Dict.make()) 
+    | State.UpdatedEmpty => res
+      -> status(200)
+      -> json(Dict.make()) 
+  } -> ignore
 }

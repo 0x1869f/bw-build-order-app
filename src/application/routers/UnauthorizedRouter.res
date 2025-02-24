@@ -4,6 +4,10 @@ let router = Router.make()
 
 router -> Router.use(jsonMiddleware())
 
+router -> Router.getAsync("/races", async (_, res: res) => {
+  (await RaceRepository.getAll()) -> dataOrErr(res, _)
+})
+
 router -> Router.getAsync("/building", async (_, res: res) => {
   (await BuildingRepository.get()) -> dataOrErr(res, _)
 })
@@ -36,14 +40,27 @@ router -> Router.getAsync("/replays", async (_, res: res) => {
   (await ReplayRepository.getAll()) -> dataOrErr(res, _)
 })
 
+router -> Router.getAsync("/external-service", async (_, res: res) => {
+  (await ExternalServiceRepository.get()) -> dataOrErr(res, _)
+})
+
 router -> Router.getAsync("/build-orders", async (_, res: res) => {
   (await BuildOrderRepository.getBuildOrderInfoList()) -> dataOrErr(res, _)
 })
 
+router -> Router.getAsync("/build-order/:id", async (req, res: res) => {
+  let params: {"id": string} = req -> Express.params
+  (await BuildOrderRepository.find(params["id"])) -> dataOrErr(res, _)
+})
+
 router -> Router.postAsync("/login", async (req, res: res) => {
-  switch req -> body -> S.parseWith(AuthSchema.schema) {
-    | Ok(body) => (await UserRepository.login(body.login, body.password)) -> Express.dataOrErr(res, _)
-    | Error(e) =>  res -> jsonError(e -> S.Error.message)
+  try {
+    let payload = req -> body -> S.parseOrThrow(AuthSchema.schema)
+    let result = await UserRepository.login(payload.login, payload.password)
+
+    res -> Express.dataOrErr(result)
+  } catch {
+    | S.Raised(e) =>  res -> jsonError(e -> S.Error.message)
   }
 })
   

@@ -1,19 +1,15 @@
 open BuildOrder.Step
 
 let schema = S.object(s => {
-  element: s.field(
-    "element",
-    // S.union([
-    //   S.literal(Unit(S.string)),
-    //   S.literal(Building(S.string)),
-    //   S.literal(Upgrade(S.string)),
-    // ]),
+  elementType: s.field(
+    "elementType",
     S.union([
-      S.string -> S.to(str => Unit(str)),
-      S.string -> S.to(str => Building(str)),
-      S.string -> S.to(str => Upgrade(str)),
+      S.literal(Unit),
+      S.literal(Building),
+      S.literal(Upgrade),
     ]),
   ),
+  elementId: s.field("elementId", S.string),
   isRemovable: s.field("isRemovable", S.bool),
   isCanceled: s.field("isCanceled", S.bool),
   supplyLimitUpBy: s.field("supplyLimitUpBy", S.int),

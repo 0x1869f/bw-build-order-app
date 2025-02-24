@@ -1,24 +1,32 @@
 let get = async () => {
   try {
-    let result: Pg.Result.t<Tag.t> = await Db.client -> Pg.Client.query("SELECT * FROM tag")
+    let result: Pg.Result.t<Tag.t> = await Db.client -> Pg.Client.query("SELECT * FROM tag ORDER BY race ASC;")
 
     result
       -> Pg.Result.rows
-      -> Ok
+      -> State.Exists
   } catch {
-    | _ => Error(AppError.OperationHasFailed)
+    | Exn.Error(obj) => {
+      obj -> PgError.toAppState
+    }
   }
 }
 
-let create = async (tag: TagSchema.payload, creator: Id.t) => {
+let create = async (tag: Tag.New.t, creator: Id.t) => {
   try {
-    let result: Pg.Result.t<Tag.t> = await Db.client -> Pg.Client.queryWithParam2("INSERT INTO tag (name, creator) VALUES ($1, $2)", (tag.name, creator))
+    let result: Pg.Result.t<Tag.t> = await Db.client
+      -> Pg.Client.queryWithParam3(
+        "INSERT INTO tag (name, race, creator) VALUES ($1, $2, $3) RETURNING id, name, race, creator",
+        (tag.name, tag.race, creator)
+      )
 
     result
       -> Pg.Result.rows
       -> Array.getUnsafe(0)
-      -> Ok
+      -> State.Created
   } catch {
-    | _ => Error(AppError.OperationHasFailed)
+    | Exn.Error(obj) => {
+      obj -> PgError.toAppState
+    }
   }
 }
