@@ -96,7 +96,7 @@ let create = async (login: string, nickname: string, password: string, role: Use
   try {
     let passwordHash = Encription.generate(password)
     let _: Pg.Result.t<unit> = await Db.client -> Pg.Client.queryWithParam4(
-      "INSERT into user (login, nickname, password, role) VALUES ($1, $2, $3, $4)",
+      "INSERT INTO app_user (login, nickname, password, role) VALUES ($1, $2, $3, $4)",
       (login, nickname, passwordHash, role)
     )
     State.Created()
