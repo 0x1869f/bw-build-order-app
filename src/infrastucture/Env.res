@@ -31,6 +31,19 @@ let staticDir =  NodeJs.Process.process
   -> NodeJs.Process.env
   -> Dict.get("STATIC_DIR") -> Option.getUnsafe
 
+let certDir =  NodeJs.Process.process
+  -> NodeJs.Process.env
+  -> Dict.get("CERT_DIR")
+
+type mode = | @as("dev") Dev | @as("prod") Prod
+external stringToMode: string => mode = "%identity"
+
+let mode = NodeJs.Process.process
+  -> NodeJs.Process.env
+  -> Dict.get("MODE")
+  -> Option.getUnsafe 
+  -> stringToMode
+
 // dev env
 let rootAdmin = NodeJs.Process.process
   -> NodeJs.Process.env

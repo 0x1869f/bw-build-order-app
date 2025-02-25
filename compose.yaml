@@ -6,7 +6,8 @@ services:
     ports:
       - 8080:8888
     volumes:
-      - broodwar-replays-static:/usr/share/nginx/html/static/
+      - broodwar-replays-static:/app/static
+      - broodwar-replays-certs:/app/certs
     environment:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
@@ -15,9 +16,13 @@ services:
       - DB_HOST=db
       - SALT=${SALT}
       - JWT_KEY=${JWT_KEY}
-      - STATIC_DIR=${STATIC_DIR}
+      - STATIC_DIR=/app/static
+      - CERT_DIR=/app/certs
+      - DEV_MODE=prod
   db:
     image: postgres:17.4-alpine3.21
+    ports:
+      - 5432:5432
     volumes:
       - broodwar-replays-database:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/data.sql
@@ -33,4 +38,7 @@ volumes:
   broodwar-replays-database:
     external: true
     name: broodwar-replays-database
+  broodwar-replays-certs:
+    external: true
+    name: broodwar-replays-certs
 
