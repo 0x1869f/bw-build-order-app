@@ -1,6 +1,7 @@
 open Express
 
 let router = Express.Router.make()
+router -> Router.use(jsonMiddleware())
 
 AuthMiddleware.make(User.Root)
   -> Router.use(router, _)
