@@ -252,7 +252,7 @@ let update = async (buildOrder: BuildOrder.New.t, ~id: Id.t, ~creator: Id.t): St
 
         let boResult: Pg.Result.t<StoredBuildOrder.Info.t> = await Db.client -> Pg.Client.queryWithParam5(
           "UPDATE build_order SET name = $1, description = $2, race = $3, opponent_race = $4 WHERE id = $5 RETURNING id, name, race, opponent_race, creator;",
-          (buildOrder.name, buildOrder.name, buildOrder.race, buildOrder.opponentRace, id)
+          (buildOrder.name, buildOrder.description, buildOrder.race, buildOrder.opponentRace, id)
         )
 
         let bo = boResult
