@@ -32,7 +32,7 @@ let login = async (login: string, password: string) => {
 
 let getAdminList = async () => {
   try {
-    let result: Pg.Result.t<User.t> = await Db.client -> Pg.Client.query("SELECT id, nickname, role FROM app_user WHERE role = 1")
+    let result: Pg.Result.t<User.t> = await Db.client -> Pg.Client.query("SELECT id, nickname, role FROM app_user WHERE role = 1 OR role = 0")
 
     result
       -> Pg.Result.rows
