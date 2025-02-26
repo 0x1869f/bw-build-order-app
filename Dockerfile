@@ -9,6 +9,7 @@ RUN yarn install --frozen-lockfile
 COPY . /app
 RUN yarn run res:build
 
-EXPOSE 8888
+EXPOSE 8080
+
 CMD ["node", "src/Main.res.mjs"]
 

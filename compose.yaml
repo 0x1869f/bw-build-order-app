@@ -4,9 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8080:8888
+      - 8080:8080
     volumes:
-      - broodwar-replays-static:/app/static
+      - broodwar-replays-static:/static
       - broodwar-replays-certs:/etc/ssl/certs/app-certs
     environment:
       - DB_NAME=${DB_NAME}
@@ -16,9 +16,12 @@ services:
       - DB_HOST=db
       - SALT=${SALT}
       - JWT_KEY=${JWT_KEY}
-      - STATIC_DIR=/app/static
+      - STATIC_DIR=/static
       - CERT_DIR=/etc/ssl/certs/app-certs
       - DEV_MODE=prod
+
+    depends_on:
+      - db
   db:
     image: postgres:17.4-alpine3.21
     ports:
