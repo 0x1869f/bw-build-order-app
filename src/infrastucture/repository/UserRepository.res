@@ -18,7 +18,7 @@ let login = async (login: string, password: string) => {
         if Encription.validate(password, user.password) {
           let token = JWT.sign({"id": user.id, "role": user.role}, ~privateKey=Env.jwtKey, ~signOptions={expiresIn: "30d"})
 
-          State.Exists({"token": token})
+          State.Ok({"token": token})
         } else {
           Error(State.IncorrectData)
         }
@@ -36,7 +36,7 @@ let getAdminList = async () => {
 
     result
       -> Pg.Result.rows
-      -> State.Exists
+      -> State.Ok
   } catch {
     | _ => State.Error(State.OperationHasFailed)
   }
@@ -50,7 +50,7 @@ let getInfo = async (id: string) => {
       | 1 => result
         -> Pg.Result.rows
         -> Array.get(0)
-        -> State.Exists
+        -> State.Ok
       | _ => State.Error(State.EntityDoesNotExist)
     }
   } catch {
@@ -62,7 +62,7 @@ let changeNickname = async (id: string, nickname: string) => {
   try {
     let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE app_user SET nickname = $1 WHERE id = $2", (nickname, id))
 
-    State.UpdatedEmpty
+    State.NoValue
   } catch {
     | _ => State.Error(State.OperationHasFailed)
   }
@@ -80,7 +80,7 @@ let changePassword = async (id: string, ~oldPassword: string, ~newPassword: stri
           let passwordHash = Encription.generate(newPassword)
           let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE app_user SET password = $1 WHERE id = $2", (passwordHash, id))
 
-          State.UpdatedEmpty
+          State.NoValue
         } else {
           State.Forbidden -> State.Error
         }

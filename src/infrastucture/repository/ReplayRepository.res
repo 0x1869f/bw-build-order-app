@@ -69,7 +69,7 @@ let addFile = async (path: string, id: Id.t) => {
     if replay -> Pg.Result.rowCount -> Nullable.getOr(0) > 0 {
       let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE replay SET file = $1 WHERE id = $2;", (path, id))
 
-      State.Updated(path)
+      State.Ok(path)
     } else {
       State.EntityDoesNotExist -> Error
     }
@@ -88,7 +88,19 @@ let getAll = async () => {
     result
       -> Pg.Result.rows
       -> Array.map((r) => StoredReplay.mapToReplay(r))
-      -> State.Exists
+      -> State.Ok
+  } catch {
+    | Exn.Error(obj) => {
+      obj -> PgError.toAppState
+    }
+  }
+}
+
+let delete = async (id: Id.t) => {
+  try {
+    let _: Pg.Result.t<StoredReplay.t> = await Db.client -> Pg.Client.queryWithParam("DELETE * FROM replay WHERE id = $1", [id])
+
+    State.NoValue
   } catch {
     | Exn.Error(obj) => {
       obj -> PgError.toAppState

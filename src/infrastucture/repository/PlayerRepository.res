@@ -31,7 +31,7 @@ let getAll = async (): State.t<array<Player.t>> => {
     result
       -> Pg.Result.rows
       -> Array.map(StoredPlayer.toPlayer)
-      -> State.Exists
+      -> State.Ok
   } catch {
     | _ => State.Error(State.OperationHasFailed)
   }
@@ -68,7 +68,7 @@ let addAvatar = async (path: string, id: Id.t) => {
     if replay -> Pg.Result.rowCount -> Nullable.getOr(0) > 0 {
       let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE player SET avatar = $1 WHERE id = $2;", (path, id))
 
-      State.Updated(path)
+      State.Ok(path)
     } else {
       State.EntityDoesNotExist -> Error
     }

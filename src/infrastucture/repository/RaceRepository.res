@@ -11,7 +11,7 @@ let getAll = async () => {
 
     result
       -> Pg.Result.rows
-      -> State.Exists
+      -> State.Ok
   } catch {
     | _ => State.Error(State.OperationHasFailed)
   }

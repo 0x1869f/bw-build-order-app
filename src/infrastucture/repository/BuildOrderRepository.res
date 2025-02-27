@@ -160,7 +160,7 @@ let getBuildOrderInfoList = async () => {
     result
       -> Pg.Result.rows
       -> Array.map(StoredBuildOrder.Info.toBuildOrderInfoWithTags)
-      -> State.Exists
+      -> State.Ok
   } catch {
     | Exn.Error(obj) => {
       obj -> PgError.toAppState
@@ -182,7 +182,7 @@ let find = async (id: Id.t): State.t<BuildOrder.t> => {
 
         value
         -> StoredBuildOrder.toBuildOrder(~tags=tags, ~steps=steps, ~links=links)
-        -> State.Exists
+        -> State.Ok
       }
       | None => Error(State.EntityDoesNotExist)
     }
@@ -231,7 +231,7 @@ let create = async (buildOrder: BuildOrder.New.t, creator: Id.t): State.t<BuildO
 
     bo
       -> StoredBuildOrder.Info.toBuildOrderInfo(tags)
-      -> State.Updated
+      -> State.Ok
   } catch {
     | Exn.Error(obj) => {
       Console.log(obj)
@@ -293,7 +293,7 @@ let update = async (buildOrder: BuildOrder.New.t, ~id: Id.t, ~creator: Id.t): St
 
         bo
           -> StoredBuildOrder.Info.toBuildOrderInfo(tags)
-          -> State.Updated
+          -> State.Ok
       } else {
         State.Error(State.Forbidden)
       }

@@ -22,7 +22,7 @@ let get = async () => {
     result
       -> Pg.Result.rows
       -> Array.map(mapper)
-      -> State.Exists
+      -> State.Ok
   } catch {
     | _ => State.Error(State.OperationHasFailed)
   }

@@ -3,7 +3,7 @@ let get = async () => {
     let result: Pg.Result.t<Upgrade.t> = await Db.client -> Pg.Client.query("SELECT * from upgrade")
     result
       -> Pg.Result.rows
-      -> State.Exists
+      -> State.Ok
   } catch {
     | _ => State.Error(State.OperationHasFailed)
   }

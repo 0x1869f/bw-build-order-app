@@ -211,23 +211,12 @@ let dataOrErr = (res: res, value: State.t<'a>) => {
       | State.Conflict => 409
       | OperationHasFailed => 500
     } -> sendStatus(res, _)
-    | State.Exists(r) => res
+    | State.Ok(r) => res
       -> status(200)
       -> json(r)
     | State.Created(r) => res
       -> status(201)
       -> json(r)
-    | State.Updated(r) => res
-      -> status(200)
-      -> json(r)
-    | State.ExistsEmpty => res
-      -> status(200)
-      -> json(Dict.make()) 
-    | State.CreatedEmpty => res
-      -> status(201)
-      -> json(Dict.make()) 
-    | State.UpdatedEmpty => res
-      -> status(200)
-      -> json(Dict.make()) 
+    | State.NoValue => res -> sendStatus(204)
   } -> ignore
 }

@@ -6,11 +6,8 @@ type error =
   | Conflict
 
 type t<'value> = 
-  | Exists('value)
-  | Updated('value)
+  | Ok('value)
   | Created('value)
-  | ExistsEmpty
-  | UpdatedEmpty
-  | CreatedEmpty
+  | NoValue
   | Error(error)
 

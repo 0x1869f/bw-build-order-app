@@ -20,10 +20,10 @@ router -> Router.patchAsync("/replay-file/:id", async (req, res) => {
       -> Option.getOr([])
       -> Array.get(0) {
       | Some(file) => switch await ReplayRepository.addFile(path, id) {
-        | Updated(p) => {
+        | Ok(p) => {
           try {
             NodeJs.Fs.renameSync(~from=file.path, ~to_=path)
-            State.Updated(p)
+            State.Ok(p)
           } catch {
             | _ => {
               State.OperationHasFailed -> Error
@@ -62,10 +62,10 @@ router -> Router.patchAsync("/player-avatar/:id", async (req, res) => {
         let path = `${Env.staticDir}/player-avatar/${id}${file.originalFilename -> NodeJs.Path.extname}`
 
         switch await PlayerRepository.addAvatar(path, id) {
-          | Updated(p) => {
+          | Ok(p) => {
             try {
               NodeJs.Fs.renameSync(~from=file.path, ~to_=path)
-              State.Updated(p)
+              State.Ok(p)
             } catch {
               | _ => {
                 State.OperationHasFailed -> Error
@@ -105,10 +105,10 @@ router -> Router.patchAsync("/map-image/:id", async (req, res) => {
         let path = `${Env.staticDir}/map-image/${id}${file.originalFilename -> NodeJs.Path.extname}`
 
         switch await MapRepository.addImage(path, id) {
-          | Updated(p) => {
+          | Ok(p) => {
             try {
               NodeJs.Fs.renameSync(~from=file.path, ~to_=path)
-              State.Updated(p)
+              State.Ok(p)
             } catch {
               | _ => {
                 State.OperationHasFailed -> Error

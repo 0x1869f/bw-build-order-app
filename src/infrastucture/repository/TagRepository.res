@@ -4,7 +4,7 @@ let get = async () => {
 
     result
       -> Pg.Result.rows
-      -> State.Exists
+      -> State.Ok
   } catch {
     | Exn.Error(obj) => {
       obj -> PgError.toAppState
