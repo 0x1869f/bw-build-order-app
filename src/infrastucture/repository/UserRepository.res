@@ -62,7 +62,7 @@ let changeNickname = async (id: string, nickname: string) => {
   try {
     let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE app_user SET nickname = $1 WHERE id = $2", (nickname, id))
 
-    State.NoValue
+    State.Success
   } catch {
     | _ => State.Error(State.OperationHasFailed)
   }
@@ -80,7 +80,7 @@ let changePassword = async (id: string, ~oldPassword: string, ~newPassword: stri
           let passwordHash = Encription.generate(newPassword)
           let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE app_user SET password = $1 WHERE id = $2", (passwordHash, id))
 
-          State.NoValue
+          State.Success
         } else {
           State.Forbidden -> State.Error
         }

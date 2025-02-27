@@ -100,7 +100,7 @@ let delete = async (id: Id.t) => {
   try {
     let _: Pg.Result.t<StoredReplay.t> = await Db.client -> Pg.Client.queryWithParam("DELETE * FROM replay WHERE id = $1", [id])
 
-    State.NoValue
+    State.Success
   } catch {
     | Exn.Error(obj) => {
       obj -> PgError.toAppState

@@ -7,7 +7,7 @@ type error =
 
 type t<'value> = 
   | Ok('value)
+  | Success
   | Created('value)
-  | NoValue
   | Error(error)
 

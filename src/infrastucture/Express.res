@@ -217,6 +217,6 @@ let dataOrErr = (res: res, value: State.t<'a>) => {
     | State.Created(r) => res
       -> status(201)
       -> json(r)
-    | State.NoValue => res -> sendStatus(204)
+    | State.Success => res -> sendStatus(204)
   } -> ignore
 }
