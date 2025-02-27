@@ -1,7 +1,6 @@
 type storedBuilding = {
   name: string,
   race: Race.t,
-  type_: int, // unit type: 0 - worker, 1 - battle unit 
   image: string,
   supply: int,
   worker_cost: int,

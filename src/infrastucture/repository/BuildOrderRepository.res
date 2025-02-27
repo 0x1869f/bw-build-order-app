@@ -24,7 +24,7 @@ module StoredBuildOrder = {
           if !(storedStep.building -> Nullable.isNullable) {
             (BuildOrder.Step.Building, storedStep.building -> Nullable.getUnsafe)
           } else {
-            (BuildOrder.Step.Building, storedStep.upgrade -> Nullable.getUnsafe)
+            (BuildOrder.Step.Upgrade, storedStep.upgrade -> Nullable.getUnsafe)
           }
         }
 
