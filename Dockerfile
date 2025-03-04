@@ -1,15 +1,17 @@
 FROM node:22-alpine3.21
 
-WORKDIR /app
+WORKDIR /home/node/app
 
-COPY package.json /app
-COPY yarn.lock /app
-RUN yarn install --frozen-lockfile
+COPY package.json ./
+COPY yarn.lock ./
+COPY rescript.json ./
+COPY src src/
 
-COPY . /app
-RUN yarn run res:build
+RUN yarn install --frozen-lockfile && yarn run res:build && yarn cache clean
 
 EXPOSE 8080
+
+USER node
 
 CMD ["node", "src/Main.res.mjs"]
 

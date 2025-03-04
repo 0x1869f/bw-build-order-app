@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@rescript/core@1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@rescript/core/-/core-1.5.2.tgz#7c15659c2e1655ca5430dd665ca5a95ae5b64673"
-  integrity sha512-VWRFHrQu8hWnd9Y9LYZ8kig2urybhZlDVGy5u50bqf2WCRAeysBIfxK8eN4VlpQT38igMo0/uLX1KSpwCVMYGw==
+"@rescript/core@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@rescript/core/-/core-1.6.1.tgz#159670c94d64a2b8236f46be2bf09a007b1ece08"
+  integrity sha512-vyb5k90ck+65Fgui+5vCja/mUfzKaK3kOPT4Z6aAJdHLH1eljEi1zKhXroCiCtpNLSWp8k4ulh1bdB5WS0hvqA==
 
 accepts@~1.3.8:
   version "1.3.8"
@@ -584,10 +584,10 @@ rescript-schema@^9.0.1:
   resolved "https://registry.yarnpkg.com/rescript-schema/-/rescript-schema-9.0.1.tgz#fcf0b73e5a90415d3a50663c06564f2e241f32ba"
   integrity sha512-Tv1r+I+A4JfaFRshznG9Kxd/7E2Wvvp+TBTS3ANLcsI2XJe2vRMltFiSp9Z3u3XdBZwGV5veYsDzQnATWwW4Jg==
 
-rescript@11.1.3:
-  version "11.1.3"
-  resolved "https://registry.yarnpkg.com/rescript/-/rescript-11.1.3.tgz#f285c988c64d7d9c397fca615ac2412681e4144e"
-  integrity sha512-bI+yxDcwsv7qE34zLuXeO8Qkc2+1ng5ErlSjnUIZdrAWKoGzHXpJ6ZxiiRBUoYnoMsgRwhqvrugIFyNgWasmsw==
+rescript@^11.1.4:
+  version "11.1.4"
+  resolved "https://registry.yarnpkg.com/rescript/-/rescript-11.1.4.tgz#9a42ebc4fc5363707e39cef5b3188160b63bee42"
+  integrity sha512-0bGU0bocihjSC6MsE3TMjHjY0EUpchyrREquLS8VsZ3ohSMD+VHUEwimEfB3kpBI1vYkw3UFZ3WD8R28guz/Vw==
 
 safe-buffer@5.2.1, safe-buffer@^5.0.1:
   version "5.2.1"
