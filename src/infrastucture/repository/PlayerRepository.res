@@ -61,14 +61,24 @@ let create = async (player: Player.New.t, creator: Id.t) => {
   }
 }
 
-let addAvatar = async (path: string, id: Id.t) => {
+let addAvatar = async (id: Id.t, file: Multiparty.file) => {
   try {
     let replay: Pg.Result.t<Replay.t> = await Db.client -> Pg.Client.queryWithParam("SELECT * from player WHERE id = $1;", [id])
 
     if replay -> Pg.Result.rowCount -> Nullable.getOr(0) > 0 {
-      let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE player SET avatar = $1 WHERE id = $2;", (path, id))
+      let dbFile = `${Env.dbStaticPath}/player-avatar/${id}${file.originalFilename -> NodeJs.Path.extname}`
 
-      State.Ok(path)
+      let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE player SET avatar = $1 WHERE id = $2;", (dbFile, id))
+
+      try {
+        let newLocation = `${Env.staticDir}/player-avatar/${id}${file.originalFilename -> NodeJs.Path.extname}`
+        NodeJs.Fs.renameSync(~from=file.path, ~to_=newLocation)
+        State.Ok(dbFile)
+      } catch {
+        | _ => {
+          State.OperationHasFailed -> Error
+        }
+      }
     } else {
       State.EntityDoesNotExist -> Error
     }

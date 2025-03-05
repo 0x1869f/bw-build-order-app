@@ -42,14 +42,22 @@ let create = async (name) => {
   }
 }
 
-let addImage = async (path: string, id: Id.t) => {
+let addImage = async (id: Id.t, file: Multiparty.file) => {
   try {
     let replay: Pg.Result.t<Replay.t> = await Db.client -> Pg.Client.queryWithParam("SELECT * from map WHERE id = $1;", [id])
 
     if replay -> Pg.Result.rowCount -> Nullable.getOr(0) > 0 {
-      let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE map SET image = $1 WHERE id = $2;", (path, id))
+      let dbFile = `${Env.dbStaticPath}/map-image/${id}${file.originalFilename -> NodeJs.Path.extname}`
+      let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE map SET image = $1 WHERE id = $2;", (dbFile, id))
 
-      State.Ok(path)
+      let newLocation = `${Env.staticDir}/map-image/${id}${file.originalFilename -> NodeJs.Path.extname}`
+
+      try {
+        NodeJs.Fs.renameSync(~from=file.path, ~to_=newLocation)
+        State.Ok(dbFile)
+      } catch {
+        | _ => State.OperationHasFailed -> Error
+      }
     } else {
       State.EntityDoesNotExist -> Error
     }

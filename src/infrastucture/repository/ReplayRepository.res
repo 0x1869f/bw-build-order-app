@@ -62,14 +62,23 @@ let create = async (replay: Replay.New.t, creator: Id.t) => {
   }
 }
 
-let addFile = async (path: string, id: Id.t) => {
+let addFile = async (id: Id.t, file: Multiparty.file) => {
   try {
     let replay: Pg.Result.t<Replay.t> = await Db.client -> Pg.Client.queryWithParam("SELECT * from replay WHERE id = $1;", [id])
 
     if replay -> Pg.Result.rowCount -> Nullable.getOr(0) > 0 {
-      let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE replay SET file = $1 WHERE id = $2;", (path, id))
+      let dbFile = `${Env.dbStaticPath}/replay/${id}.rep`
+      let _ = await Db.client -> Pg.Client.queryWithParam2("UPDATE replay SET file = $1 WHERE id = $2;", (dbFile, id))
 
-      State.Ok(path)
+      try {
+        let newLocation = `${Env.staticDir}/replay/${id}.rep`
+        NodeJs.Fs.renameSync(~from=file.path, ~to_=newLocation)
+        State.Ok(dbFile)
+      } catch {
+        | _ => {
+          State.OperationHasFailed -> Error
+        }
+      }
     } else {
       State.EntityDoesNotExist -> Error
     }
